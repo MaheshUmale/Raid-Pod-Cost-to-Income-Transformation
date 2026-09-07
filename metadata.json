@@ -1,0 +1,6 @@
+{
+  "name": "Raid Pod: Cost-to-Income Transformation",
+  "description": "Multi-agent Raid Pod operations platform intercepting unstructured data, automating legacy workflows with exception routing, live OpEx savings tracking, and bottleneck simulation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
