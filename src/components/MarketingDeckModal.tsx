@@ -17,7 +17,8 @@ import {
   ArrowRight,
   Sparkles,
   Maximize2,
-  FileText
+  FileText,
+  ExternalLink
 } from 'lucide-react';
 import heroVisual from '../assets/images/raid_pod_hero_visual_1788792902775.jpg';
 import execDeckVisual from '../assets/images/raid_pod_exec_deck_1788792927201.jpg';
@@ -37,6 +38,29 @@ export const MarketingDeckModal: React.FC<MarketingDeckModalProps> = ({
 }) => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isPrintMode, setIsPrintMode] = useState(false);
+
+  const handleDownloadPDF = () => {
+    // Direct file download of the generated PDF from root/public
+    const link = document.createElement('a');
+    link.href = '/api/download-deck-pdf';
+    link.download = 'RAID_POD_EXECUTIVE_PRESENTATION.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleOpenInNewTab = () => {
+    window.open('/RAID_POD_EXECUTIVE_PRESENTATION.pdf', '_blank', 'noopener,noreferrer');
+  };
+
+  const handlePrint = () => {
+    try {
+      window.print();
+    } catch (e) {
+      // If window.print is blocked by iframe security sandbox, fallback to direct PDF download
+      handleDownloadPDF();
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -444,22 +468,28 @@ export const MarketingDeckModal: React.FC<MarketingDeckModalProps> = ({
                 Phase 1: Discovery (Wks 1-2) • Phase 2: Shadow Testing (Wks 3-5) • Phase 3: Production (Wks 6-12)
               </span>
             </div>
-            <button
-              onClick={() => window.print()}
-              className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold rounded-lg text-xs flex items-center gap-1.5 shrink-0 transition-colors shadow-xs"
-            >
-              <Printer className="w-3.5 h-3.5" />
-              Print / Save PDF Presentation
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                id="btn-download-pdf-deck-slide"
+                onClick={handleDownloadPDF}
+                className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold rounded-lg text-xs flex items-center gap-1.5 shrink-0 transition-colors shadow-xs"
+              >
+                <Download className="w-3.5 h-3.5" />
+                Download PDF Presentation (1.5 MB)
+              </button>
+              <button
+                onClick={handlePrint}
+                className="px-3 py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 font-semibold rounded-lg text-xs flex items-center gap-1.5 shrink-0 transition-colors border border-stone-700"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                Print
+              </button>
+            </div>
           </div>
         </div>
       ),
     },
   ];
-
-  const handlePrint = () => {
-    window.print();
-  };
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-stone-950/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4">
@@ -482,20 +512,40 @@ export const MarketingDeckModal: React.FC<MarketingDeckModalProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              id="btn-download-pdf-top"
+              onClick={handleDownloadPDF}
+              className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-stone-950 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors shadow-xs"
+              title="Download compiled multi-page PDF presentation document directly"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Download PDF (1.5MB)</span>
+            </button>
+
+            <button
+              id="btn-open-pdf-newtab"
+              onClick={handleOpenInNewTab}
+              className="px-2.5 py-1.5 bg-stone-800 hover:bg-stone-700 text-stone-300 border border-stone-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"
+              title="Open PDF in new browser tab"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-stone-400" />
+              <span>Open in New Tab</span>
+            </button>
+
             <button
               id="btn-print-deck-top"
               onClick={handlePrint}
-              className="px-3 py-1.5 bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"
-              title="Print or Save as PDF via browser print dialogue"
+              className="px-2.5 py-1.5 bg-stone-800 hover:bg-stone-700 text-stone-400 hover:text-stone-200 border border-stone-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"
+              title="Print via browser print dialogue"
             >
-              <Printer className="w-3.5 h-3.5 text-amber-400" />
-              <span>Print / Download PDF Deck</span>
+              <Printer className="w-3.5 h-3.5" />
+              <span>Print</span>
             </button>
 
             <button
               onClick={onClose}
-              className="p-1.5 text-stone-400 hover:text-white rounded-lg hover:bg-stone-800 transition-colors"
+              className="p-1.5 text-stone-400 hover:text-white rounded-lg hover:bg-stone-800 transition-colors ml-1"
             >
               <X className="w-5 h-5" />
             </button>

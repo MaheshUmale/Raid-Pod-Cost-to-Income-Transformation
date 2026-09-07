@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI, Type } from '@google/genai';
 import dotenv from 'dotenv';
@@ -496,6 +497,22 @@ app.post('/api/simulate-retry', async (req, res) => {
     resolvedVia,
     timestamp: new Date().toISOString(),
   });
+});
+
+// Download PDF Presentation endpoint
+app.get('/api/download-deck-pdf', (req, res) => {
+  const rootPdfPath = path.join(process.cwd(), 'RAID_POD_EXECUTIVE_PRESENTATION.pdf');
+  const publicPdfPath = path.join(process.cwd(), 'public', 'RAID_POD_EXECUTIVE_PRESENTATION.pdf');
+  
+  const targetPath = fs.existsSync(rootPdfPath) ? rootPdfPath : publicPdfPath;
+
+  if (!fs.existsSync(targetPath)) {
+    return res.status(404).json({ error: 'PDF presentation document not found.' });
+  }
+
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', 'attachment; filename="RAID_POD_EXECUTIVE_PRESENTATION.pdf"');
+  res.sendFile(targetPath);
 });
 
 // Setup Vite development middleware or static production serving
